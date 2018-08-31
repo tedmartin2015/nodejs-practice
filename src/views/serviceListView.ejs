@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        WELCOME TO THE SERVICES PAGE!
+      </div>
+      <div>
+        <ul>
+          <%for(var i=0; i<services.length;i++){%>
+              <li>
+                <a href="/services/<%=services[i].servicesid%>">
+                  <%=services[i].name%>
+                </a>
+              </li>
+          <%}%>
+        </ul>
+      </div>
+      <div class="jumbotron">
+        <a href="/">HOME</a>
+      </div>
+    </div>
+  </body>
+</html>

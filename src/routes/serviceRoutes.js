@@ -20,6 +20,7 @@ function router(message) {
     });
 
   serviceRouter.route('/:id')
+    //test
     .get((req, res) => {
       (async function query() {
         const { id } = req.params;

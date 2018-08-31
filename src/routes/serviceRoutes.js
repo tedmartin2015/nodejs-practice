@@ -19,24 +19,28 @@ function router(message) {
       } ());
     });
 
-  serviceRouter.route('/:id')
-    .get((req, res) => {
-      (async function query() {
-        const { id } = req.params;
-        const request = new sql.Request();
-        const { recordset } = await request
-          .input('xServiceID', sql.Int, id)
-          .execute('dbo.pSELECTServicesByID');
+    serviceRouter.route('/:id')
+      //test commit to new branch
+      .all((req, res, next) => {
+        (async function query() {
+          const { id } = req.params;
+          const request = new sql.Request();
+          const { recordset } = await request
+            .input('xServiceID', sql.Int, id)
+            .execute('dbo.pSELECTServicesByID');
+
+          [req.service] = recordset;
+          next();
+        } ());
+      })
+      .get((req, res) => {
         res.render(
           'serviceView',
           {
-            service: recordset[0]
+            service: req.service
           }
         );
-      } ());
-
-
-    });
+      });
 
   return serviceRouter;
 }

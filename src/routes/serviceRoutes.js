@@ -20,23 +20,26 @@ function router(message) {
     });
 
   serviceRouter.route('/:id')
-    //test
-    .get((req, res) => {
+    //test commit to new branch
+    .all((req, res, next) => {
       (async function query() {
         const { id } = req.params;
         const request = new sql.Request();
         const { recordset } = await request
           .input('xServiceID', sql.Int, id)
           .execute('dbo.pSELECTServicesByID');
-        res.render(
-          'serviceView',
-          {
-            service: recordset[0]
-          }
-        );
+
+        [req.service] = recordset;
+        next();
       } ());
-
-
+    })
+    .get((req, res) => {
+      res.render(
+        'serviceView',
+        {
+          service: req.service
+        }
+      );
     });
 
   return serviceRouter;

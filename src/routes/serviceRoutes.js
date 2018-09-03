@@ -1,21 +1,34 @@
 const express = require('express');
 const sql = require('mssql');
+const { MongoClient } = require('mongodb');
 const serviceRouter = express.Router();
 const debug = require('debug')('app:serviceRoutes');
 
 function router(message) {
   serviceRouter.route('/')
     .get((req, res) => {
-      (async function query() {
-        const request = new sql.Request();
-        const { recordset } = await request.execute('dbo.pSELECTServices');
+      const url = 'mongodb://localhost:27017';
+      const dbName = 'serviceApp';
 
-        res.render(
-          'serviceListView',
-          {
-            services: recordset
+      (async function mongo() {
+          let client;
+          try {
+              client = await MongoClient.connect(url);
+              const db = client.db(dbName);
+              const col = await db.collection('services');
+              const services = await col.find().toArray();
+          
+              res.render(
+                'serviceListView',
+                {
+                  services
+                }
+              )
+              client.close();
           }
-        )
+          catch (err) {
+            debug(err.stack);
+          }       
       } ());
     });
 
@@ -44,7 +57,5 @@ function router(message) {
 
   return serviceRouter;
 }
-
-
 
 module.exports = router;

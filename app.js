@@ -38,8 +38,11 @@ app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
 const servicesRouter = require('./src/routes/serviceRoutes') (message);
+const adminRouter = require('./src/routes/adminRoutes') (message);
 
 app.use('/services', servicesRouter);
+app.use('/admin', adminRouter);
+
 app.get('/', (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'index.html'));
   res.render('index',

@@ -6,6 +6,15 @@ const passport = require('passport');
 const authRouter = express.Router();
 
 function router(message, nav) {
+    // authRouter.use((req, res, next) => {
+    //     //can use req.user.roles or req.user.isadmin depending on what you put in the db
+    //     if (req.user) {
+    //         next();
+    //     }
+    //     else {
+    //         res.redirect('/');
+    //     }
+    // });
     authRouter.route('/signUp')
         .post((req, res) => {
             //create user
@@ -33,9 +42,10 @@ function router(message, nav) {
                 }
             } ());           
         });
-        
+
     authRouter.route('/signIn')
         .get((req, res) => {
+            debug('inside signin!!!******');
             res.render('signin', {
                 nav,
                 message,
@@ -51,6 +61,20 @@ function router(message, nav) {
         .get((req, res) => {
             res.json(req.user);
         });
+
+    authRouter.route('/logout')
+        .all((req, res, next) => {
+            req.logout();
+            next();
+        })
+        .get((req, res) => {
+            res.render('logout', {
+                name: 'Test',
+                nav
+            });
+        });
+        
+    
     return authRouter;
 }
 

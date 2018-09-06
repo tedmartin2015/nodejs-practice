@@ -4,6 +4,7 @@ const debug = require('debug') ('app:authRoutes');
 const passport = require('passport');
 
 const authRouter = express.Router();
+const authController = require('../controllers/authController');
 
 function router(message, nav) {
     // authRouter.use((req, res, next) => {
@@ -15,78 +16,24 @@ function router(message, nav) {
     //         res.redirect('/');
     //     }
     // });
+    const { insertUser, renderSignIn, displayProfile, middleware, renderLogout } = authController(message, nav);
+
     authRouter.route('/signUp')
-        .post((req, res) => {
-            //create user
-            const { username, password } = req.body;
-            const url = 'mongodb://localhost:27017';
-            const dbName = 'serviceApp';
-
-            (async function addUser() {
-                let client;
-                try {
-                    client = await MongoClient.connect(url);
-                    debug('ADD USER - Connected to the db server');
-                    const db = client.db(dbName);
-                    const col = db.collection('users');
-                    const user = { username, password };
-
-                    //check if inputted user already exists!
-                    const checkUser = await col.findOne({ username: user.username });
-
-                    if (!checkUser) {
-                        const results = await col.insertOne(user);
-                        debug(results);
-
-                        req.login(results.ops[0], () => {
-                            res.redirect('/auth/profile');
-                        });
-                    } 
-                    else {
-                        //redirect to sign in page with message informing the user that the inputted username already exists.
-                        res.render('signin', {
-                            nav,
-                            message: 'The username you are trying to register already exists',
-                            title: 'Sign In'
-                        });
-                    }                    
-                } catch (err) {
-                    debug(err);
-                }
-                client.close();
-            } ());           
-        });
+        .post(insertUser);
 
     authRouter.route('/signIn')
-        .get((req, res) => {
-            debug('inside signin!!!******');
-            res.render('signin', {
-                nav,
-                message,
-                title: 'Sign In'
-            });
-        })
+        .get(renderSignIn)
         .post(passport.authenticate('local', {
             successRedirect: '/auth/profile',
             failureRedirect: '/'
         }));
 
     authRouter.route('/profile')
-        .get((req, res) => {
-            res.json(req.user);
-        });
+        .get(displayProfile);
 
     authRouter.route('/logout')
-        .all((req, res, next) => {
-            req.logout();
-            next();
-        })
-        .get((req, res) => {
-            res.render('logout', {
-                name: 'Test',
-                nav
-            });
-        });
+        .all(middleware)
+        .get(renderLogout);
             
     return authRouter;
 }

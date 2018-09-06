@@ -46,7 +46,7 @@ app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
 const servicesRouter = require('./src/routes/serviceRoutes') (message);
-const adminRouter = require('./src/routes/adminRoutes') (message);
+const adminRouter = require('./src/routes/adminRoutes') (message, nav);
 const authRouter = require('./src/routes/authRoutes') (message, nav);
 const homeRouter = require('./src/routes/homeRoutes') (message);
 
@@ -61,7 +61,8 @@ app.get('/', (req, res) => {
   res.render('index',
     {
       nav,
-      title: 'Library'
+      title: 'Library',
+      message: ''
     });
 });
 

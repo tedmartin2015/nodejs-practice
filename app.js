@@ -48,13 +48,16 @@ app.set('view engine', 'ejs');
 const servicesRouter = require('./src/routes/serviceRoutes') (message);
 const adminRouter = require('./src/routes/adminRoutes') (message);
 const authRouter = require('./src/routes/authRoutes') (message, nav);
+const homeRouter = require('./src/routes/homeRoutes') (message);
 
 app.use('/services', servicesRouter);
 app.use('/admin', adminRouter);
 app.use('/auth', authRouter);
+app.use('/home', homeRouter);
 
 app.get('/', (req, res) => {
   //res.sendFile(path.join(__dirname, 'views', 'index.html'));
+  req.logout();
   res.render('index',
     {
       nav,

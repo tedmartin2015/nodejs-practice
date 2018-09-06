@@ -40,7 +40,15 @@ const services = [
     }];
 
 function router(message) {
-
+    
+    adminRouter.use((req, res, next) => {
+        if (req.user.username === 'ted') {
+            next();
+        }
+        else {
+            res.redirect('/');
+        }
+    });
     adminRouter.route('/')
         .get((req, res) => {
             const url = 'mongodb://localhost:27017';

@@ -31,15 +31,29 @@ function router(message, nav) {
                     const col = db.collection('users');
                     const user = { username, password };
 
-                    const results = await col.insertOne(user);
-                    debug(results);
+                    //check if inputted user already exists!
+                    const checkUser = await col.findOne({ username: user.username });
 
-                    req.login(results.ops[0], () => {
-                        res.redirect('/auth/profile');
-                    });
+                    if (!checkUser) {
+                        const results = await col.insertOne(user);
+                        debug(results);
+
+                        req.login(results.ops[0], () => {
+                            res.redirect('/auth/profile');
+                        });
+                    } 
+                    else {
+                        //redirect to sign in page with message informing the user that the inputted username already exists.
+                        res.render('signin', {
+                            nav,
+                            message: 'The username you are trying to register already exists',
+                            title: 'Sign In'
+                        });
+                    }                    
                 } catch (err) {
                     debug(err);
                 }
+                client.close();
             } ());           
         });
 
@@ -73,8 +87,7 @@ function router(message, nav) {
                 nav
             });
         });
-        
-    
+            
     return authRouter;
 }
 

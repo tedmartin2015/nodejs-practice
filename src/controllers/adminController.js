@@ -4,39 +4,46 @@ const services = [
     {
         servicesid: 1,
         name: 'Delivery and Logistics',
-        provider: 'Sophia Angela Hermosisima'
+        provider: 'Sophia Angela Hermosisima',
+        bookId: 619041
     },
     {
         servicesid: 2,
         name: 'Customer Service',
-        provider: 'Zecharia Barriga'
+        provider: 'Zecharia Barriga',
+        bookId: 2146097
     },
     {
         servicesid: 3,
         name: 'Costing and Estimates',
-        provider: 'Ted Martin Hermosisima'
+        provider: 'Ted Martin Hermosisima',
+        bookId: 377494
     },
     {
         servicesid: 4,
         name: 'Supplier Relations',
-        provider: 'Melanie Hermosisima'
+        provider: 'Melanie Hermosisima',
+        bookId: 2146370
     },
     {
         servicesid: 5,
         name: 'Expansion and Acquisition',
-        provider: 'Melanie Hermosisima'
+        provider: 'Melanie Hermosisima',
+        bookId: 5002
     },
     {
         servicesid: 6,
         name: 'Information Evangelist',
-        provider: 'Melanie Hermosisima'
+        provider: 'Melanie Hermosisima',
+        bookId: 78250
     },
     {
         servicesid: 7,
         name: 'IT Administrator',
-        provider: 'Zecharia Barriga'
+        provider: 'Zecharia Barriga',
+        bookId: 2429135
     }];
-    
+
 function adminController(message, nav) {
     function middleware(req, res, next) {
         if (req.user.username === 'ted') {

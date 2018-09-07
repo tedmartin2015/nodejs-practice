@@ -9,12 +9,22 @@
       </div>
 
       <div class="jumbotron">
-        <%=service.provider%>
+        <div>
+            <%=service.provider%>
+        </div>
       </div>
 
       <div class="jumbotron">
-        <a href="/services">Back to Services page</a>
+          <div style="text-align: center;">
+              <img alt="" src="<%=service.details.image_url%>" />
+            </div>
+        <div><%-service.details.description%></div>
       </div>
+
+      <div class="jumbotron">
+          <a href="/services">Back to Services page</a>
+        </div>
+
     </div>
   </body>
 </html>

@@ -1,7 +1,7 @@
 const debug = require('debug')('app:serviceController');
 const { MongoClient, ObjectID } = require('mongodb');
 
-function serviceController(message) {
+function serviceController(bookService, message) {
     function getIndex (req, res) {
         const url = 'mongodb://localhost:27017';
         const dbName = 'serviceApp';
@@ -44,6 +44,8 @@ function serviceController(message) {
                 const col = await db.collection('services');
 
                 const service = await col.findOne({ _id: new ObjectID(id)});
+
+                service.details = await bookService.getBookById(service.bookId);
                 res.render(
                     'serviceView',
                     {

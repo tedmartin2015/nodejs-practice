@@ -43,7 +43,7 @@ function serviceController(bookService, message) {
             responseType: "json"
         })
         .then((response) => {
-            (async function mongo2() {
+            (async function mongo() {
                 const service = response.data;
                 service.details = await bookService.getBookById(service.bookId);
                 res.render(

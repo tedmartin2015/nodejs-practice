@@ -1,5 +1,5 @@
 const debug = require('debug')('app:serviceController');
-const { MongoClient, ObjectID } = require('mongodb');
+const axios = require('axios');
 
 function serviceController(bookService, message) {
     function getIndex (req, res) {
@@ -7,25 +7,27 @@ function serviceController(bookService, message) {
         const dbName = 'serviceApp';
 
         (async function mongo() {
-            let client;
-            try {
-                client = await MongoClient.connect(url);
-                const db = client.db(dbName);
-                const col = await db.collection('services');
-                const services = await col.find().toArray();
-            
-                res.render(
-                    'serviceListView',
-                    {
-                        services
-                    }
-                );
-                client.close();
+            try { 
+                axios({
+                    method: "GET",
+                    url: "http://localhost:5003/services",
+                    responseType: "json"
+                })
+                .then((response) => {
+                    res.render(
+                        'serviceListView',
+                        {
+                            services: response.data
+                        }
+                    );
+                })
+                .catch((err) => {
+                    debug(err.stack);
+                });
             }
             catch (err) {
                 debug(err.stack);
             } 
-            client.close();      
         } ());
     }
 
@@ -35,16 +37,14 @@ function serviceController(bookService, message) {
         const dbName = 'serviceApp';
         const { id } = req.params;
 
-        (async function mongo() {
-            let client;
-            
-            try {            
-                client = await MongoClient.connect(url);
-                const db = client.db(dbName);
-                const col = await db.collection('services');
-
-                const service = await col.findOne({ _id: new ObjectID(id)});
-
+        axios({
+            method: "GET",
+            url: `http://localhost:5003/services/${id}`,
+            responseType: "json"
+        })
+        .then((response) => {
+            (async function mongo2() {
+                const service = response.data;
                 service.details = await bookService.getBookById(service.bookId);
                 res.render(
                     'serviceView',
@@ -52,12 +52,12 @@ function serviceController(bookService, message) {
                         service
                     }
                 );
-            }
-            catch (err) {
-                debug(err.stack);
-            }
-            client.close();
-        } ());  
+            } ());
+            
+        })
+        .catch((err) => {
+            debug(err.stack);
+        });
     }
 
     return {

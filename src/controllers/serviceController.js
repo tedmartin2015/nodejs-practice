@@ -58,6 +58,7 @@ function serviceController(bookService, message) {
         .catch((err) => {
             debug(err.stack);
         });
+
     }
 
     return {
